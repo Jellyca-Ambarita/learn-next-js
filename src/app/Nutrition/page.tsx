@@ -173,7 +173,7 @@ export default function NutritionPage() {
 
             <Grid container spacing={2} justifyContent="center">
               {['Pagi','Siang','Malam'].map((slot,i)=>(
-                <Grid item xs={12} sm={6} key={i}>
+                <Grid item xs={12} sm={6} key={i} component="div">
                   <NutritionCard
                     title={slot}
                     description={(todayMenu as any)[slot.toLowerCase()]}
