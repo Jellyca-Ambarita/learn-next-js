@@ -1,4 +1,4 @@
-// components/NutritionCard.tsx
+import React from 'react';
 import { styled } from '@mui/system';
 import { Card, CardContent, Box, Typography } from '@mui/material';
 
@@ -14,13 +14,14 @@ const RestaurantIcon = () => (
     strokeLinecap="round"
     strokeLinejoin="round"
     style={{ marginRight: '8px', color: '#90caf9' }}
+    aria-hidden="true"
   >
-    <path d="M6 2v20"></path>
-    <path d="M18 2v20"></path>
-    <path d="M6 6h12"></path>
-    <path d="M6 10h12"></path>
-    <path d="M6 14h12"></path>
-    <path d="M6 18h12"></path>
+    <path d="M6 2v20" />
+    <path d="M18 2v20" />
+    <path d="M6 6h12" />
+    <path d="M6 10h12" />
+    <path d="M6 14h12" />
+    <path d="M6 18h12" />
   </svg>
 );
 
@@ -35,15 +36,13 @@ const StyledCard = styled(Card, {
   marginBottom: theme.spacing(2),
 }));
 
-const NutritionCard = ({
-  title,
-  description,
-  darkMode,
-}: {
+interface NutritionCardProps {
   title: string;
   description: string;
   darkMode: boolean;
-}) => {
+}
+
+const NutritionCard: React.FC<NutritionCardProps> = ({ title, description, darkMode }) => {
   return (
     <StyledCard $darkMode={darkMode}>
       <CardContent>
