@@ -104,10 +104,11 @@ export default function NutritionPage() {
 
   /* pilih menu sesuai hari */
   useEffect(() => {
-    const hariList = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu']
-    const hari = hariList[new Date().getDay()]
-    setTodayMenu({ hari, ...dailyMenus[hari] })
-  }, [])
+  const hariList = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'] as const
+  type Hari = keyof typeof dailyMenus
+  const hari = hariList[new Date().getDay()] as Hari
+  setTodayMenu({ hari, ...dailyMenus[hari] })
+}, [])
 
   /* auth check */
   useEffect(() => {
