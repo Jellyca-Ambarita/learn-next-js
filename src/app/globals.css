@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* Default (light mode) */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --input-bg: #ffffff;
+  --input-text: #000000;
+  --input-label: #000000;
+  --input-border: #ccc;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --input-bg: #2c3e50;
+    --input-text: #ffffff;
+    --input-label: #aaaaaa;
+    --input-border: #444444;
+  }
+}
+
+/* Optional Tailwind theme vars */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Body style */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Input, textarea, select */
+input,
+textarea,
+select {
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid var(--input-border);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
+
+/* Label styling (if outside component) */
+label {
+  color: var(--input-label);
+}
+
+/* Focus style */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #888;
+}
+
+/* Autofill fix */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--input-text) !important;
+  caret-color: var(--input-text);
+  transition: background-color 5000s ease-in-out 0s;
+}
