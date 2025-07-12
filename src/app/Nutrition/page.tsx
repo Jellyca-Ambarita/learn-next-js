@@ -1,4 +1,5 @@
 'use client'
+
 import Grid from '@mui/material/Grid'
 import {
   Typography,
@@ -226,17 +227,28 @@ export default function NutritionPage() {
               {todayMenu.hari}
             </Typography>
 
-            <Grid container spacing={2} justifyContent="center">
-              {(['Pagi', 'Siang', 'Malam'] as const).map((slot, i) => (
-                <Grid item xs={12} sm={6} key={i}>
-                  <NutritionCard
-                    title={slot}
-                    description={todayMenu[slot.toLowerCase() as keyof DailyMenu]}
-                    darkMode={darkMode}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+            <<Grid container spacing={2} justifyContent="center">
+  {['Pagi','Siang','Malam'].map((slot, i) => (
+    <Grid 
+      key={i}
+      item
+      xs={12}
+      sm={6}
+      component="div"  // Explicitly set as div
+      sx={{           // Optional styling
+        padding: 1,
+        display: 'flex',
+        justifyContent: 'center'
+      }}
+    >
+      <NutritionCard
+        title={slot}
+        description={(todayMenu as any)[slot.toLowerCase()]}
+        darkMode={darkMode}
+      />
+    </Grid>
+  ))}
+</Grid>
           </>
         )}
       </PageCard>
