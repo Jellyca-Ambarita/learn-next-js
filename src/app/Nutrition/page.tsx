@@ -55,41 +55,51 @@ const PageCard = styled(Paper)(({ theme }) => ({
 const glow = { boxShadow: '0 0 8px 2px rgba(255,215,0,.6)' }
 
 /* ────────── Menu with calories ────────── */
-const dailyMenus = {
+interface DailyMenu {
+  pagi: string;
+  siang: string;
+  malam: string;
+}
+
+interface TodayMenu extends DailyMenu {
+  hari: string;
+}
+
+const dailyMenus: Record<string, DailyMenu> = {
   Senin: {
-    pagi : 'Oatmeal + kiwi & chia (≈310 kcal)',
-    siang: 'Ayam kukus + sayur rebus (≈420 kcal)',
-    malam: 'Sup tomat + tofu goreng (≈350 kcal)',
+    pagi: 'Oatmeal + kiwi & chia (≈310 kcal)',
+    siang: 'Ayam kukus + sayur rebus (≈420 kcal)',
+    malam: 'Sup tomat + tofu goreng (≈350 kcal)',
   },
   Selasa: {
-    pagi : 'Roti gandum + selai kacang (≈360 kcal)',
-    siang: 'Nasi merah + ayam teriyaki (≈500 kcal)',
-    malam: 'Tumis brokoli + telur orak‑arik (≈330 kcal)',
+    pagi: 'Roti gandum + selai kacang (≈360 kcal)',
+    siang: 'Nasi merah + ayam teriyaki (≈500 kcal)',
+    malam: 'Tumis brokoli + telur orak‑arik (≈330 kcal)',
   },
   Rabu: {
-    pagi : 'Smoothie mangga + granola (≈300 kcal)',
-    siang: 'Bakwan jagung + lalapan (≈450 kcal)',
-    malam: 'Spaghetti gandum + saus sayur (≈480 kcal)',
+    pagi: 'Smoothie mangga + granola (≈300 kcal)',
+    siang: 'Bakwan jagung + lalapan (≈450 kcal)',
+    malam: 'Spaghetti gandum + saus sayur (≈480 kcal)',
   },
   Kamis: {
-    pagi : 'Telur rebus + pisang (≈280 kcal)',
-    siang: 'Soto ayam bening + nasi merah (≈430 kcal)',
-    malam: 'Salmon bakar + salad timun (≈460 kcal)',
+    pagi: 'Telur rebus + pisang (≈280 kcal)',
+    siang: 'Soto ayam bening + nasi merah (≈430 kcal)',
+    malam: 'Salmon bakar + salad timun (≈460 kcal)',
   },
   Jumat: {
-    pagi : 'Chia pudding + alpukat (≈320 kcal)',
-    siang: 'Gado‑gado + lontong (≈520 kcal)',
-    malam: 'Sup jamur + telur dadar (≈340 kcal)',
+    pagi: 'Chia pudding + alpukat (≈320 kcal)',
+    siang: 'Gado‑gado + lontong (≈520 kcal)',
+    malam: 'Sup jamur + telur dadar (≈340 kcal)',
   },
   Sabtu: {
-    pagi : 'Greek yogurt + granola (≈310 kcal)',
-    siang: 'Capcay ayam + tahu (≈440 kcal)',
-    malam: 'Kari kentang + tempe panggang (≈480 kcal)',
+    pagi: 'Greek yogurt + granola (≈310 kcal)',
+    siang: 'Capcay ayam + tahu (≈440 kcal)',
+    malam: 'Kari kentang + tempe panggang (≈480 kcal)',
   },
   Minggu: {
-    pagi : 'French toast gandum + madu (≈370 kcal)',
-    siang: 'Pepes ikan + sayur asem (≈460 kcal)',
-    malam: 'Nasi uduk + tahu bacem (≈500 kcal)',
+    pagi: 'French toast gandum + madu (≈370 kcal)',
+    siang: 'Pepes ikan + sayur asem (≈460 kcal)',
+    malam: 'Nasi uduk + tahu bacem (≈500 kcal)',
   },
 }
 
@@ -98,20 +108,25 @@ export default function NutritionPage() {
   const { darkMode, toggleDarkMode } = useDarkMode()
   const theme = useTheme()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [todayMenu, setTodayMenu] = useState<any>(null)
+  const [todayMenu, setTodayMenu] = useState<TodayMenu | null>(null)
   const [checking, setChecking] = useState(true)
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   /* pilih menu sesuai hari */
   useEffect(() => {
-  const hariList = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'] as const
-  type Hari = keyof typeof dailyMenus
-  const hari = hariList[new Date().getDay()] as Hari
-  setTodayMenu({ hari, ...dailyMenus[hari] })
-}, [])
+    const hariList = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'] as const
+    const hari = hariList[new Date().getDay()]
+    setTodayMenu({ hari, ...dailyMenus[hari] })
+  }, [])
 
   /* auth check */
   useEffect(() => {
-    localStorage.getItem('isLoggedIn') === 'true' ? setChecking(false) : router.push('/auth/login')
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+    if (!isLoggedIn) {
+      router.push('/auth/login')
+    } else {
+      setChecking(false)
+    }
   }, [router])
 
   if (checking) return null
@@ -119,40 +134,81 @@ export default function NutritionPage() {
   return (
     <StyledBackground $dark={darkMode}>
       {/* action bar */}
-      <Box sx={{ position:'absolute', top:16, right:16, display:'flex', gap:1, flexWrap:'wrap', maxWidth:'100%' }}>
-        <Link href="/dashboard">
-          <IconButton sx={{ color:'#FFD700', border:'1px solid #FFD700', background:'rgba(255,255,255,0.12)', '&:hover':{ background:'rgba(255,255,255,0.18)', ...glow } }}>
+      <Box sx={{ 
+        position: 'absolute', 
+        top: 16, 
+        right: 16, 
+        display: 'flex', 
+        gap: 1,
+        flexWrap: 'wrap',
+        justifyContent: isMobile ? 'center' : 'flex-end',
+        width: isMobile ? '100%' : 'auto',
+        paddingX: isMobile ? 2 : 0
+      }}>
+        <Link href="/dashboard" passHref legacyBehavior>
+          <IconButton sx={{ 
+            color: '#FFD700', 
+            border: '1px solid #FFD700', 
+            background: 'rgba(255,255,255,0.12)', 
+            '&:hover': { 
+              background: 'rgba(255,255,255,0.18)', 
+              ...glow 
+            } 
+          }}>
             <HomeIcon fontSize="small" />
           </IconButton>
         </Link>
-        <IconButton onClick={e=>setAnchorEl(e.currentTarget)} sx={{ color:'#FFD700', border:'1px solid #FFD700', background:'rgba(255,255,255,0.12)', '&:hover':{ background:'rgba(255,255,255,0.18)', ...glow } }}>
+        <IconButton 
+          onClick={(e) => setAnchorEl(e.currentTarget)} 
+          sx={{ 
+            color: '#FFD700', 
+            border: '1px solid #FFD700', 
+            background: 'rgba(255,255,255,0.12)', 
+            '&:hover': { 
+              background: 'rgba(255,255,255,0.18)', 
+              ...glow 
+            } 
+          }}
+        >
           <MenuIcon fontSize="small" />
         </IconButton>
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
-          onClose={()=>setAnchorEl(null)}
+          onClose={() => setAnchorEl(null)}
           PaperProps={{
-            sx:{
+            sx: {
               background: darkMode
-               ? 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)'
-               : 'linear-gradient(135deg,#749BC2,#A9C4EB)',
-              backdropFilter:'blur(12px)',
-              border:'1px solid rgba(255,255,255,0.2)',
-              color:'#FFD700',
+                ? 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)'
+                : 'linear-gradient(135deg,#749BC2,#A9C4EB)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              color: '#FFD700',
+              minWidth: 200,
             },
           }}
         >
           {[
-            { l:'Data Diri', h:'/profile' },
-            { l:'Notifikasi Kesehatan', h:'/Reminders' },
-            { l:'Media Sosial', h:'/social' },
-          ].map(i=>(
-            <MenuItem key={i.h} onClick={()=>setAnchorEl(null)}>
-              <Link href={i.h} style={{ textDecoration:'none', color:'inherit' }}>{i.l}</Link>
+            { label: 'Data Diri', href: '/profile' },
+            { label: 'Notifikasi Kesehatan', href: '/Reminders' },
+            { label: 'Media Sosial', href: '/social' },
+          ].map((item) => (
+            <MenuItem key={item.href} onClick={() => setAnchorEl(null)}>
+              <Link href={item.href} passHref legacyBehavior>
+                <Typography component="a" sx={{ 
+                  textDecoration: 'none', 
+                  color: 'inherit',
+                  width: '100%'
+                }}>
+                  {item.label}
+                </Typography>
+              </Link>
             </MenuItem>
           ))}
-          <MenuItem onClick={()=>{ toggleDarkMode(); setAnchorEl(null) }}>
+          <MenuItem onClick={() => { 
+            toggleDarkMode(); 
+            setAnchorEl(null) 
+          }}>
             <DarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
           </MenuItem>
         </Menu>
@@ -160,22 +216,22 @@ export default function NutritionPage() {
 
       {/* content */}
       <PageCard>
-        <Typography variant="h5" fontWeight={700} sx={{ color:'#fff' }} textAlign="center" gutterBottom>
+        <Typography variant="h5" fontWeight={700} sx={{ color: '#fff' }} textAlign="center" gutterBottom>
           Menu Sehat Hari Ini
         </Typography>
 
         {todayMenu && (
           <>
-            <Typography variant="h6" sx={{ color:'#FFD700' }} textAlign="center" gutterBottom>
+            <Typography variant="h6" sx={{ color: '#FFD700' }} textAlign="center" gutterBottom>
               {todayMenu.hari}
             </Typography>
 
             <Grid container spacing={2} justifyContent="center">
-              {['Pagi','Siang','Malam'].map((slot,i)=>(
+              {(['Pagi', 'Siang', 'Malam'] as const).map((slot, i) => (
                 <Grid item xs={12} sm={6} key={i}>
                   <NutritionCard
                     title={slot}
-                    description={(todayMenu as any)[slot.toLowerCase()]}
+                    description={todayMenu[slot.toLowerCase() as keyof DailyMenu]}
                     darkMode={darkMode}
                   />
                 </Grid>
