@@ -1,12 +1,11 @@
 'use client'
-
+import Grid from '@mui/material/Grid'
 import {
   Typography,
   Box,
   Menu,
   MenuItem,
   IconButton,
-  Grid,
   Paper,
   useMediaQuery,
   useTheme,
@@ -173,7 +172,7 @@ export default function NutritionPage() {
 
             <Grid container spacing={2} justifyContent="center">
               {['Pagi','Siang','Malam'].map((slot,i)=>(
-                <Grid item xs={12} sm={6} key={i} component="div">
+                <Grid item xs={12} sm={6} key={i}>
                   <NutritionCard
                     title={slot}
                     description={(todayMenu as any)[slot.toLowerCase()]}
